@@ -7,6 +7,26 @@
     <title>Document</title>
 </head>
 <body>
-    kumocat
+    KumoCat
+    <div id="result"></div>
+    <script>
+        div = document.getElementById('result');
+        let packname = 'coupons';
+        let namesToTry = [packname];
+        if (packname.endsWith('es')) {
+            namesToTry.push = packname.slice(0,-2);
+        } else if (packname.endsWith('s')) {
+            namesToTry.push = packname.slice(0,-1);
+        }
+
+        console.log(namesToTry);
+
+        let checkKeys = /key+s$/;
+        let checkCoupons = /coupon+s*/;
+        let checkTickets = /ticket+s*/;
+
+        console.log(checkCoupons.test('coupon'));
+
+    </script>
 </body>
 </html>

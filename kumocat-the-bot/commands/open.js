@@ -2,7 +2,6 @@ module.exports = {
     name: 'Open',
     description: 'Pack opener',
     execute(message, args) {
-        //let timerStart = performance.now();
         //Some packs cant be opened
         if (args.includes('fortune') && (args.includes('key') || args.includes('keys'))) {
             return message.channel.send("I'm sorry I can't open Fortune Keys :(");
