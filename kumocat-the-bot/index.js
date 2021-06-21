@@ -2,7 +2,7 @@ const fs = require('fs');
 
 const Discord = require("discord.js");
 const client = new Discord.Client();
-const config = require("../config.json");
+const config = require("./config.json");
 
 client.commands = new Discord.Collection();
 
@@ -16,7 +16,7 @@ for (const file of commandFiles) {
 
 
 client.packs = new Discord.Collection();
-const tab = require(`../droptables/xpack.js`);
+const tab = require(`./droptables/xpack.js`);
 client.packs.set(tab.name, tab);
 
 for(const drops of client.packs) {
@@ -65,7 +65,7 @@ client.on("message", async message => {
   //Yes!
   const args = message.content.slice(config.prefix.length).trim().split(/ /g);
   const command = args.shift().toLowerCase();
-  console.log("(command: " + command + " | args: " + args + ")");
+  console.log(message.member + ": (command: " + command + " | args: " + args + ")");
  
   if (!client.commands.has(command)) { 
     if (command == "stop") { return message.channel.send('What did I do?'); }

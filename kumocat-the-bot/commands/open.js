@@ -3,37 +3,57 @@ module.exports = {
     description: 'Pack opener',
     execute(message, args) {
         //Some packs cant be opened
-        if (args.includes('fortune') && (args.includes('key') || args.includes('keys'))) {
+
+        if (args.includes('fortune') || (args.includes(/key+s$/))) {
             return message.channel.send("I'm sorry I can't open Fortune Keys :(");
-        } else if (args.includes('magnificence') && (args.includes('coupon') || args.includes('ticket'))) {
+        } else if (args.includes('magnificence') || (args.includes(/coupon+s*/) || args.includes(/ticket+s*/))) {
             return message.channel.send("I'm sorry I can't use the Palette of Fortune :(")
         }
   
         // Check amount and packname
-        const msg = args.join(" ");
+
+        const Amount = args.shift();    
+
+        // Check if amount is a number & not too high.
         const isNumber = /\d+/;
-        //const packAmount = args[0].match(isNumber);
-        
+        if (!isNumber.test(Amount)) {
+            return message.channel.send('Please tell me the amount of packs too, meow.');
+        } else if (Amount > 10000) {
+            return message.channel.send('Thats too many! Meoooow. No more than 10,000!');
+        }
+
         function getPackObject(packName) {
             let packAlias = packName.toString().replace(/,/g,'').replace(/\s+/g, '').toLowerCase();
-            try {
-                let packObject = new require(`../droptables/${packAlias}.js`);
-                return packObject;
-            } catch (error) {
-                message.channel.send(`I couldn't find the file *${packAlias}.js*`);
-                return;
+            //Check for variations and create a list of possible pack names
+            let namesToTry = [];
+            namesToTry.push(packAlias);
+            if (packAlias.endsWith('es')) {
+                namesToTry.push(packAlias.slice(0,-2));
+            } else if (packAlias.endsWith('s')) {
+                namesToTry.push(packAlias.slice(0,-1));
             }
+
+            //Find the droptable based on possible pack names
+            let packObject;
+            for (let i = 0; i < namesToTry.length; i++) {
+                try {
+                    packObject = new require(`../droptables/${namesToTry[i]}.js`);
+                    return packObject;
+                } catch (error) {
+                    continue;
+                }
+            }
+            return packAlias;
         }
 
-        const Amount = args.shift().match(isNumber);        
+        //Create the pack object
         const Pack = getPackObject(args);
+        if (typeof(Pack) == 'string') {
+            return message.channel.send(`Double check your spelling! ... or maybe I just don't have the droptable of "${Pack}" yet, meow.`);
+        }
 
         //const packName = msg.replace(packAmount,'');
-    
-        //Stop if pack amount is too high
-        if (Amount > 10000) {
-            return message.channel.send('Thats too many! Meoooow.');
-        }
+
 
         //const Pack = new require(`../droptables/${packAlias}.js`);
         //console.log(Pack.dropTable);
